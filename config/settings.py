@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g2ha8^5438z7ce%p@8ryb!qzfvd2$&4mmn_64^k)_+h@a$ei4h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'Rafik2025.pythonanywhere.com']
 
 # PASSWORD_HASHERS = [
 #     "accounts.hashers.PlainTextPasswordHasher",

@@ -1,0 +1,298 @@
+# Query: in
+# ContextLines: 1
+
+109 results - 14 files
+
+manage.py:
+   1: #!/usr/bin/env python
+   2: """Django's command-line utility for administrative tasks."""
+   3  import os
+
+   6  
+   7: def main():
+   8:     """Run administrative tasks."""
+   9:     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+  10      try:
+  11:         from django.core.management import execute_from_command_line
+  12      except ImportError as exc:
+  13          raise ImportError(
+  14:             "Couldn't import Django. Are you sure it's installed and "
+  15              "available on your PYTHONPATH environment variable? Did you "
+
+  17          ) from exc
+  18:     execute_from_command_line(sys.argv)
+  19  
+  20  
+  21: if __name__ == '__main__':
+  22:     main()
+
+accounts\admin.py:
+  1: from django.contrib import admin
+  2  
+
+  7  from .models import Students
+  8: @admin.register(Students)
+  9: class StudentsAdmin(admin.ModelAdmin):
+  10      list_display = ('name', 'email', 'age')
+
+accounts\hashers.py:
+  3  
+  4: class PlainTextPasswordHasher(BasePasswordHasher):
+  5:     algorithm = "plain"
+  6  
+
+accounts\models.py:
+   7      name = models.CharField(max_length=100)
+   8:     age = models.IntegerField()
+   9      email = models.EmailField()
+
+  18          verbose_name_plural = 'Students'
+  19:         ordering = ['name']  # Default ordering by name
+  20          
+
+accounts\urls.py:
+  6  urlpatterns = [
+  7:     path('', views.login_view, name='index'),
+  8      path('vuln/', views.vuln, name='vuln'),
+
+accounts\views.py:
+   7  from django.contrib import messages
+   8: def login_view(request):
+   9:     return render(request, 'index.html')
+  10  
+
+  21  
+  22: def login_view(request):
+  23      if request.method == 'POST':
+
+  29  
+  30:         # Vulnerable SQL insertion - directly concatenating user input
+  31:         sql = f"INSERT INTO students (name, email, age, password) VALUES ('{name}', '{email}', '{age}', '{password}')"
+  32  
+
+  37                  messages.success(request, "Student registered successfully!")
+  38:                 return redirect('login_view')
+  39          except Exception as e:
+
+  41      
+  42:     return render(request, 'index.html')
+
+accounts\migrations\0001_initial.py:
+   7  
+   8:     initial = True
+   9  
+
+  18                  ('name', models.CharField(max_length=100)),
+  19:                 ('age', models.IntegerField()),
+  20                  ('email', models.EmailField(max_length=254)),
+
+  25                  'db_table': 'students',
+  26:                 'ordering': ['name'],
+  27              },
+
+accounts\migrations\0002_students_password.py:
+  8      dependencies = [
+  9:         ('accounts', '0001_initial'),
+  10      ]
+
+accounts\templates\index.html:
+    3  
+    4: <div class="subscription-container">
+    5      <h1>Register as Student</h1>
+
+    9              <label for="name">Full Name</label>
+   10:             <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+   11          </div>
+
+   14              <label for="email">Email Address</label>
+   15:             <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+   16          </div>
+
+   19              <label for="age">Age</label>
+   20:             <input type="number" id="age" name="age" min="13" placeholder="Enter your age" required>
+   21          </div>
+
+   23              <label for="password">Password</label>
+   24:             <input type="password" id="password" name="password"  placeholder="Enter your password" required>
+   25          </div>
+
+   32  <div class="messages">
+   33:     {% for message in messages %}
+   34      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+
+   41  <style>
+   42:     .subscription-container {
+   43          max-width: 500px;
+   44:         margin: 50px auto;
+   45:         padding: 30px;
+   46          background-color: #ffffff;
+
+   54          color: #333;
+   55:         margin-bottom: 25px;
+   56          font-size: 24px;
+
+   64      .form-group {
+   65:         margin-bottom: 20px;
+   66      }
+
+   69          display: block;
+   70:         margin-bottom: 8px;
+   71          font-weight: bold;
+
+   74      
+   75:     input {
+   76          width: 100%;
+   77:         padding: 12px;
+   78          border: 1px solid #ddd;
+
+   81          transition: border-color 0.3s;
+   82:         box-sizing: border-box;
+   83      }
+   84      
+   85:     input:focus {
+   86          border-color: #4d90fe;
+   87:         outline: none;
+   88          box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+
+   94          border: none;
+   95:         padding: 14px 20px;
+   96          border-radius: 5px;
+
+   98          font-weight: bold;
+   99:         cursor: pointer;
+  100          transition: background-color 0.3s;
+
+  107      @media (max-width: 600px) {
+  108:         .subscription-container {
+  109:             margin: 20px;
+  110:             padding: 20px;
+  111          }
+
+config\asgi.py:
+   5  
+   6: For more information on this file, see
+   7  https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
+
+  13  
+  14: os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+  15  
+
+config\settings.py:
+    1  """
+    2: Django settings for authentification project.
+    3  
+    4: Generated by 'django-admin startproject' using Django 5.2.1.
+    5  
+    6: For more information on this file, see
+    7: https://docs.djangoproject.com/en/5.2/topics/settings/
+    8  
+    9: For the full list of settings and their values, see
+   10: https://docs.djangoproject.com/en/5.2/ref/settings/
+   11  """
+
+   14  
+   15: # Build paths inside the project like this: BASE_DIR / 'subdir'.
+   16  BASE_DIR = Path(__file__).resolve().parent.parent
+
+   18  
+   19: # Quick-start development settings - unsuitable for production
+   20  # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+   21  
+   22: # SECURITY WARNING: keep the secret key used in production secret!
+   23: SECRET_KEY = 'django-insecure-g2ha8^5438z7ce%p@8ryb!qzfvd2$&4mmn_64^k)_+h@a$ei4h'
+   24  
+   25: # SECURITY WARNING: don't run with debug turned on in production!
+   26  DEBUG = True
+
+   30  # PASSWORD_HASHERS = [
+   31: #     "accounts.hashers.PlainTextPasswordHasher",
+   32  # ]
+   33: # Application definition
+   34  
+   35: INSTALLED_APPS = [
+   36:     'django.contrib.admin',
+   37      'django.contrib.auth',
+
+   52      'django.contrib.messages.middleware.MessageMiddleware',
+   53:     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   54  ]
+
+   76  # Database
+   77: # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+   78  
+
+   80      'default': {
+   81:         'ENGINE': 'django.db.backends.sqlite3',
+   82          'NAME': BASE_DIR / 'db.sqlite3',
+
+   87  # Password validation
+   88: # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+   89  
+
+   94      {
+   95:         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+   96      },
+
+  105  
+  106: # Internationalization
+  107  # https://docs.djangoproject.com/en/5.2/topics/i18n/
+
+  123  # Default primary key field type
+  124: # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+  125  
+
+config\urls.py:
+  1: from django.contrib import admin
+  2: from django.urls import path,include
+  3  
+  4  urlpatterns = [
+  5:     path('admin/', admin.site.urls),
+  6:     path('',include("accounts.urls")),
+  7  ]
+
+config\wsgi.py:
+   5  
+   6: For more information on this file, see
+   7  https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
+
+  13  
+  14: os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+  15  
+
+templates\base.html:
+   5      <meta charset="UTF-8">
+   6:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   7      <title>{% block title %}المعهد الوطني المتخصص في التكوين المهني سيدي عبد الله الرحمانية{% endblock %}</title>
+
+   9      <!-- Google Fonts -->
+  10:     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+  11  
+  12      <!-- Bootstrap CSS -->
+  13:     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  14  
+
+  38              height: 40px;
+  39:             margin-left: 10px; /* يفصل بين اللوغو والاسم */
+  40          }
+
+  55          <nav class="navbar navbar-expand-lg">
+  56:             <div class="container">
+  57                  <a class="navbar-brand" href="#">
+
+  70  
+  71:     <main class="container mt-4">
+  72          {% if messages %}
+  73              <div class="messages">
+  74:                 {% for message in messages %}
+  75                      <div class="alert alert-{{ message.tags }}">
+
+  82          {% block content %}{% endblock %}
+  83:     </main>
+  84  
+  85      <footer class="mt-5 py-3">
+  86:         <div class="container text-center">
+  87              <p>&copy; {% now "Y" %} My Site. جميع الحقوق محفوظة.</p>
+
+  91      <!-- Bootstrap JS -->
+  92:     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  93      {% block scripts %}{% endblock %}
