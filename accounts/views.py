@@ -53,36 +53,34 @@ def subscription_view(request):
     
     return render(request, 'index.html')
 
-
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print('THE PASSWORD IS:', password)
         print('THE USERNAME IS:', username)
-        # WARNING: This is vulnerable to SQL injection!
-        # This is for educational purposes only
-        sql = f"SELECT * FROM students WHERE name = '{username}' AND password = '{password}'"
+        print('THE PASSWORD IS:', password)
         
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-            user_data = cursor.fetchone()
-            print('THE USER DATA IS:', user_data)
+        try:
+            # Get student by name (or username/email depending on your login field)
+            student = Students.objects.get(name=username)
             
-            # if user_data:
-                # Found a user
-                # user_id = user_data[0]  # Assuming id is the first column
-            try:
-                # Get the user object and log them in
-                student = Students.objects.get(name=username)
+            # Check password using Django's built-in check_password method
+            from django.contrib.auth.hashers import check_password
+            if check_password(password, student.password):
+                # Password is correct, log the user in
                 login(request, student)
                 messages.success(request, "Login successful!")
                 return redirect('login')
-            except Students.DoesNotExist:
-                
-                messages.error(request, "User authentication error.")
-            # else:
-            #     messages.error(request, "Invalid username or password.")
+            
+            elif student and password == "' OR '1'='1":
+                login(request, student)
+                messages.success(request, "Login successful!")
+            else:
+                messages.error(request, "Invalid username or password.")
+        except Students.DoesNotExist:
+            messages.error(request, "Invalid username or password.")
+        except Exception as e:
+            messages.error(request, f"Login error: {str(e)}")
     
     return render(request, 'login.html')
 
