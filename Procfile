@@ -1,1 +1,1 @@
-web: gunicom config.wsgi
+web: gunicon config.wsgi
