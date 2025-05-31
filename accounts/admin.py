@@ -1,6 +1,14 @@
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 
-# Register your models here.
+# Titre principal en haut de la page d'administration
+admin.site.site_header = "Panneau d'administration du projet"
+
+# Titre de l'onglet dans le navigateur
+admin.site.site_title = "Gestion du projet"
+
+# Titre de la page d'accueil du panneau d'administration
+admin.site.index_title = "Bienvenue dans le panneau d'administration"
 
 
 
