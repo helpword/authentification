@@ -37,6 +37,7 @@ def index_view(request):
                 messages.success(request, "Student registered successfully!")
                 return redirect('index_view')
         except Exception as e:
-            messages.error(request, f"Registration failed: {str(e)}")
+            pass
+            # messages.error(request, f"Registration failed: {str(e)}")
     
     return render(request, 'index.html')
