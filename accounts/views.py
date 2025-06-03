@@ -9,6 +9,11 @@ from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from .models import Students
 from django.contrib.auth import logout
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.urls import reverse
 
 
 def index_view(request):
@@ -90,3 +95,13 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Successfully logged out.")
     return redirect('login')
+
+def send_activation_email(request, user):
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    activation_link = request.build_absolute_uri(
+        reverse('activate', kwargs={'uidb64': uid, 'token': token})
+    )
+    subject = 'تفعيل حسابك'
+    message = f'اضغط على الرابط التالي لتفعيل حسابك:\n{activation_link}'
+    send_mail(subject, message, 'your_email@gmail.com', [user.email])

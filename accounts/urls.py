@@ -11,3 +11,10 @@ urlpatterns = [
     # Alternatively, use Django's built-in logout view:
     path('logout/', views.logout_view, name='logout'),
 ]
+from django.urls import path
+from .views import activate_account  # أو views_secure إذا وضعتها هناك
+
+urlpatterns = [
+    # روابط أخرى موجودة عندك
+    path('activate/<uidb64>/<token>/', activate_account, name='activate'),
+]

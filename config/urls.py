@@ -5,3 +5,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include("accounts.urls")),
 ]
+from django.urls import path, include
+
+urlpatterns = [
+    path('accounts/', include('accounts.urls')),  # هذا يربط جميع روابط التطبيق accounts
+]
